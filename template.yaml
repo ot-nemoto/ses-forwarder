@@ -5,13 +5,33 @@ Description: >
 
   Sample SAM Template for ses-forwarder
 
+Parameters:
+  Domain:
+    Type: String
+    Default: mail.example.com
+  SourceUser:
+    Type: String
+    Default: ''
+  Forwarder:
+    Type: String
+    Default: ''
+  ForwardingAddress:
+    Type: String
+    Default: recept_to@mail.example.com
+
+Conditions:
+  IsNotSourceUser:
+    !Equals [!Ref SourceUser, '']
+  IsNotForwarder:
+    !Equals [!Ref Forwarder, '']
+
 Globals:
   Function:
     Timeout: 3
     Environment:
       Variables:
-        MAIL_FROM: w5h1pmmshqgt@sute.jp
-        RCPT_TO: w5h1pmmshqgt@sute.jp
+        MAIL_FROM: !If [ IsNotForwarder, !Sub "ses@${Domain}", !Ref Forwarder ]
+        RCPT_TO: !Ref ForwardingAddress
 
 Resources:
   ####### #     # #     #  #####  ####### ### ####### #     #
@@ -82,11 +102,11 @@ Resources:
     Properties:
       RuleSetName: !Ref ReceiptRuleSet
       Rule:
-        Name: mail.nemodija.com
+        Name: !If [ IsNotSourceUser, !Ref Domain, !Sub "${SourceUser}.${Domain}" ]
         Enabled: true
         ScanEnabled: true
         Recipients:
-        - mail.nemodija.com
+        - !If [ IsNotSourceUser, !Ref Domain, !Sub "${SourceUser}@${Domain}" ]
         Actions:
         - S3Action:
             BucketName: !Ref Bucket

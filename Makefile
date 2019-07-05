@@ -2,6 +2,11 @@ deploy_bucket_stack_name = ses-forwarder-bucket-stack
 sam_stack_name = ses-forwarder-stack
 make = make --no-print-directory
 
+domain = mail.example.com
+source_user = ''
+forwarder = ''
+forwarding_address = recept_to@mail.example.com
+
 create-deploy-bucket-stack:
 ifneq ($(shell aws cloudformation describe-stacks \
   --query 'Stacks[?StackName==`${deploy_bucket_stack_name}`].StackName' \
@@ -16,7 +21,11 @@ deploy: create-deploy-bucket-stack
 	  --query 'Stacks[].Outputs[?OutputKey==`S3Bucket`].OutputValue' \
 	  --output text))
 	sam package --s3-bucket $(bucket) --output-template-file packaged.yml
-	sam deploy --template-file packaged.yml --stack-name $(sam_stack_name) --capabilities CAPABILITY_IAM
+	sam deploy --template-file packaged.yml --stack-name $(sam_stack_name) --capabilities CAPABILITY_IAM \
+	  --parameter-overrides Domain=$(domain) \
+                                SourceUser=$(source_user) \
+                                Forwarder=$(forwarder) \
+                                ForwardingAddress=$(forwarding_address)
 	@$(make) enable_active_rule_set
 
 enable_active_rule_set:
