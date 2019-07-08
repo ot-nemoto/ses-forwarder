@@ -9,6 +9,8 @@ SESで受信したメールを転送する簡易サービス
 
 ### サービス構成
 
+![サービス構成](https://raw.githubusercontent.com/ot-nemoto/ses-forwarder/master/ses-forwarder.png)
+
 ### デプロイ
 
 - `<your domain>` 宛のメールを `<your forwarding address>` へ転送
@@ -18,27 +20,27 @@ SESで受信したメールを転送する簡易サービス
   - またドメイン(`mail.example.com`)も SESの Identiry Management > Domains で Verification Status を verified にしておく
 
 ```sh
-make deplwy domain=<your domain> \
+make deploy domain=<your domain> \
             forwarding_address=<your forwarding address>
 
 # e.g.
-# make deplwy domain=mail.example.com \
+# make deploy domain=mail.example.com \
 #             forwarding_address=ot-nemoto@mail.sample.com
 ```
 
 - 転送時のFromアドレス(`your forwarder`)を指定する場合
-  - 例の場合 `ot-nemoto@mail.sample.com` が転送者となる
+  - 例の場合 `forwarder@mail.forwarder.com` が転送者となる
   - 指定しない場合は `ses@<your domain>` が転送者
   - 転送アドレスを指定する場合、SESの Identity Management > Email Addresses で Verification Status を verified にしておく
   - 転送アドレスのドメインが `<your domain>` であれば、Identity Management > Email Addresses への登録は不要
 
 ```sh
-make deplwy domain=<your domain> \
+make deploy domain=<your domain> \
             forwarding_address=<your forwarding address> \
             forwarder=<your forwarder>
 
 # e.g.
-# make deplwy domain=mail.example.com \
+# make deploy domain=mail.example.com \
 #             forwarding_address=ot-nemoto@mail.sample.com \
 #             forwarder=forwarder@mail.forwarder.com
 ```
@@ -48,13 +50,13 @@ make deplwy domain=<your domain> \
   - 許可されないメールアドレスはバウンスされる
 
 ```sh
-make deplwy domain=<your domain> \
+make deploy domain=<your domain> \
             source_user=<your source name> \
             forwarding_address=<your forwarding address> \
             forwarder=<your forwarder>
 
 # e.g.
-# make deplwy domain=mail.example.com \
+# make deploy domain=mail.example.com \
 #             source_user=ot-nemoto \
 #             forwarding_address=ot-nemoto@mail.sample.com \
 #             forwarder=forwarder@mail.forwarder.com
