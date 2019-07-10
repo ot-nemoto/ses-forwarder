@@ -6,7 +6,20 @@ import os
 def lambda_handler(event, context):
 
     print(json.dumps(event))
+    print(event.get('Records')[0].get('Sns').get('Message'))
+    message = json.loads(event.get('Records')[0].get('Sns').get('Message'))
+    notification_type = message.get('notificationType')
+    destinations = message.get('mail').get('destination')
+    bucket_name = message.get('receipt').get('action').get('bucketName')
+    object_key = message.get('receipt').get('action').get('objectKey')
     
+    print(notification_type)
+    print(destinations)
+    print(bucket_name)
+    print(object_key)
+
+    return
+
     mail_from = os.environ['MAIL_FROM']
     forward_to = os.environ['RCPT_TO'].split(",")
     bucket_name = event.get('Records')[0].get('s3').get('bucket').get('name')

@@ -30,6 +30,7 @@ Globals:
     Timeout: 3
     Environment:
       Variables:
+        ENABLED_DISTINATION: !If [ IsNotSourceUser, !Ref Domain, !Sub "${SourceUser}@${Domain}" ]
         MAIL_FROM: !If [ IsNotForwarder, !Sub "ses@${Domain}", !Ref Forwarder ]
         RCPT_TO: !Ref ForwardingAddress
 
@@ -58,18 +59,17 @@ Resources:
           Resource: "*"
       Events:
         ReceivedEmail:
-          Type: S3
+          Type: SNS
           Properties:
-            Bucket: !Ref Bucket
-            Events: "s3:ObjectCreated:*"
+            Topic: !Ref SnsTopic
 
-   #####   ##### 
+   #####   #####
   #     # #     #
   #             #
-   #####   ##### 
+   #####   #####
         #       #
   #     # #     #
-   #####   ##### 
+   #####   #####
   Bucket:
     Type: AWS::S3::Bucket
   BucketPolicy:
@@ -88,13 +88,13 @@ Resources:
             StringEquals:
               aws:Referer: !Ref AWS::AccountId
 
-   #####  #######  ##### 
+   #####  #######  #####
   #     # #       #     #
-  #       #       #      
-   #####  #####    ##### 
+  #       #       #
+   #####  #####    #####
         # #             #
   #     # #       #     #
-   #####  #######  ##### 
+   #####  #######  #####
   ReceiptRuleSet:
     Type: AWS::SES::ReceiptRuleSet
   ReceiptRule:
@@ -111,6 +111,17 @@ Resources:
         - S3Action:
             BucketName: !Ref Bucket
             ObjectKeyPrefix: ses
+            TopicArn: !Ref SnsTopic
+
+   #####  #     #  #####
+  #     # ##    # #     #
+  #       # #   # #
+   #####  #  #  #  #####
+        # #   # #       #
+  #     # #    ## #     #
+   #####  #     #  #####
+  SnsTopic:
+    Type: AWS::SNS::Topic
 
 Outputs:
   S3Bucket:
