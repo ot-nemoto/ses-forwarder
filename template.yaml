@@ -22,8 +22,6 @@ Parameters:
 Conditions:
   IsNotSourceUser:
     !Equals [!Ref SourceUser, '']
-  IsNotForwarder:
-    !Equals [!Ref Forwarder, '']
 
 Globals:
   Function:
@@ -31,7 +29,7 @@ Globals:
     Environment:
       Variables:
         ENABLED_DISTINATION: !If [ IsNotSourceUser, !Ref Domain, !Sub "${SourceUser}@${Domain}" ]
-        MAIL_FROM: !If [ IsNotForwarder, !Sub "ses@${Domain}", !Ref Forwarder ]
+        MAIL_FROM: !Ref Forwarder
         RCPT_TO: !Ref ForwardingAddress
 
 Resources:
