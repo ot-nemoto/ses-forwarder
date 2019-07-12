@@ -30,7 +30,7 @@ make deploy domain=<your domain> \
 
 - 転送時のFromアドレス(`your forwarder`)を指定する場合
   - 例の場合 `forwarder@mail.forwarder.com` が転送者となる
-  - 指定しない場合は `ses@<your domain>` が転送者
+  - 指定しない場合は宛先(`*****@<your domain>`)が転送者
   - 転送アドレスを指定する場合、SESの Identity Management > Email Addresses で Verification Status を verified にしておく
   - 転送アドレスのドメインが `<your domain>` であれば、Identity Management > Email Addresses への登録は不要
 
