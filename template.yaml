@@ -25,7 +25,7 @@ Conditions:
 
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 30
     Environment:
       Variables:
         ENABLED_DISTINATION: !If [ IsNotSourceUser, !Ref Domain, !Sub "${SourceUser}@${Domain}" ]
