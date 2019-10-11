@@ -45,5 +45,7 @@ def lambda_handler(event, context):
                 'Data': replaced_message
             }
         )
+        print(json.dumps(response))
+        return response
     except Exception as e:
         raise e
