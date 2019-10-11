@@ -6,18 +6,22 @@ import os
 def lambda_handler(event, context):
 
     print(json.dumps(event))
-    
-    mail_from = os.environ['MAIL_FROM']
+    print(event.get('Records')[0].get('Sns').get('Message'))
+    message = json.loads(event.get('Records')[0].get('Sns').get('Message'))
+    notification_type = message.get('notificationType')
+    destinations = message.get('mail').get('destination')
+    bucket_name = message.get('receipt').get('action').get('bucketName')
+    object_key = message.get('receipt').get('action').get('objectKey')
+
+    mail_from = destinations[0] if not os.environ['MAIL_FROM'] else os.environ['MAIL_FROM']
     forward_to = os.environ['RCPT_TO'].split(",")
-    bucket_name = event.get('Records')[0].get('s3').get('bucket').get('name')
-    object_name = event.get('Records')[0].get('s3').get('object').get('key')
 
     # get s3 object
     try:
         s3 = boto3.client('s3')
         response = s3.get_object(
             Bucket = bucket_name,
-            Key    = object_name
+            Key    = object_key
         )
     except Exception as e:
         raise e
@@ -41,5 +45,7 @@ def lambda_handler(event, context):
                 'Data': replaced_message
             }
         )
+        print(json.dumps(response))
+        return response
     except Exception as e:
         raise e
