@@ -9,7 +9,7 @@ SESで受信したメールを転送する簡易サービス
 
 ### サービス構成
 
-![サービス構成](https://raw.githubusercontent.com/ot-nemoto/ses-forwarder/master/ses-forwarder.png)
+![サービス構成](https://github.com/ot-nemoto/ses-forwarder/blob/images/ses-forwarder.png)
 
 ### デプロイ
 
