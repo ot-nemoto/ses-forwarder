@@ -3,11 +3,17 @@ import boto3
 import re
 import os
 
+DISABLED_MESSAGE_IDS = ['AMAZON_SES_SETUP_NOTIFICATION']
+
 def lambda_handler(event, context):
 
     print(json.dumps(event))
     print(event.get('Records')[0].get('Sns').get('Message'))
     message = json.loads(event.get('Records')[0].get('Sns').get('Message'))
+    message_id = message.get('mail').get('messageId')
+    if message_id in DISABLED_MESSAGE_IDS:
+        print('Skip Invalid messageID. (%s)' % message_id)
+        return
     notification_type = message.get('notificationType')
     destinations = message.get('mail').get('destination')
     bucket_name = message.get('receipt').get('action').get('bucketName')
