@@ -20,6 +20,8 @@ def lambda_handler(event, context):
         return
     notification_type = message.get('notificationType')
     destinations = message.get('mail').get('destination')
+    if not destinations:
+      destinations = message.get('receipt').get('recipients')
     bucket_name = message.get('receipt').get('action').get('bucketName')
     object_key = message.get('receipt').get('action').get('objectKey')
 
